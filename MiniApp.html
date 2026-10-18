@@ -1,507 +1,550 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>ТоМесто Брони — PRO Concept</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <title>То Место – Бронирования</title>
   <style>
-    :root {
-      --bg-main: #0f1115;
-      --bg-card: #181b22;
-      --bg-elevated: #222630;
-      --primary: #2b7fff;
-      --primary-dim: rgba(43, 127, 255, 0.15);
-      --text-main: #f3f4f6;
-      --text-muted: #8b92a5;
-      --success: #10b981;
-      --success-bg: rgba(16, 185, 129, 0.14);
-      --warning: #f59e0b;
-      --warning-bg: rgba(245, 158, 11, 0.15);
-      --danger: #ef4444;
-      --danger-bg: rgba(239, 68, 68, 0.14);
-      --border: rgba(255, 255, 255, 0.07);
-      --radius-lg: 16px;
-      --radius-md: 12px;
-      --shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    :root[data-theme="dark"] {
+      --bg-main: #000000;
+      --bg-surface: #0A0A0A;
+      --bg-elevated: #141414;
+      --bg-glass: rgba(10, 10, 10, 0.85);
+      --border: #1F1F1F;
+      --border-light: #2A2A2A;
+      --text-primary: #FFFFFF;
+      --text-secondary: #8E8E93;
+      --text-muted: #555558;
+      --accent-blue: #2563EB;
+      --accent-green: #10B981;
+      --accent-green-bg: rgba(16, 185, 129, 0.08);
+      --accent-green-border: rgba(16, 185, 129, 0.25);
+      --accent-amber: #F59E0B;
+      --accent-amber-bg: rgba(245, 158, 11, 0.1);
+      --accent-red: #EF4444;
+      --accent-red-bg: rgba(239, 68, 68, 0.1);
+      --btn-primary-bg: #FFFFFF;
+      --btn-primary-text: #000000;
     }
 
-    body.light-theme {
-      --bg-main: #f2f4f8;
-      --bg-card: #ffffff;
-      --bg-elevated: #eef1f6;
-      --primary: #1d6ff2;
-      --primary-dim: rgba(29, 111, 242, 0.1);
-      --text-main: #111827;
-      --text-muted: #6b7280;
-      --success: #059669;
-      --success-bg: rgba(5, 150, 105, 0.12);
-      --warning: #d97706;
-      --warning-bg: rgba(217, 119, 6, 0.12);
-      --danger: #dc2626;
-      --danger-bg: rgba(220, 38, 38, 0.1);
-      --border: rgba(0, 0, 0, 0.08);
-      --shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+    :root[data-theme="light"] {
+      --bg-main: #F5F5F7;
+      --bg-surface: #FFFFFF;
+      --bg-elevated: #F0F0F2;
+      --bg-glass: rgba(255, 255, 255, 0.85);
+      --border: #E5E5EA;
+      --border-light: #D1D1D6;
+      --text-primary: #000000;
+      --text-secondary: #6E6E73;
+      --text-muted: #AEAEB2;
+      --accent-blue: #2563EB;
+      --accent-green: #059669;
+      --accent-green-bg: rgba(5, 150, 105, 0.08);
+      --accent-green-border: rgba(5, 150, 105, 0.25);
+      --accent-amber: #D97706;
+      --accent-amber-bg: rgba(217, 119, 6, 0.1);
+      --accent-red: #DC2626;
+      --accent-red-bg: rgba(220, 38, 38, 0.08);
+      --btn-primary-bg: #000000;
+      --btn-primary-text: #FFFFFF;
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       -webkit-tap-highlight-color: transparent;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     }
 
     body {
       background-color: var(--bg-main);
-      color: var(--text-main);
-      padding-bottom: 90px;
-      transition: background-color 0.25s ease, color 0.25s ease;
+      color: var(--text-primary);
+      line-height: 1.4;
+      padding-bottom: 100px;
+      overflow-x: hidden;
+      transition: background-color 0.2s ease, color 0.2s ease;
     }
 
-    /* Верхняя панель */
-    header {
+    svg {
+      display: block;
+      flex-shrink: 0;
+    }
+
+    /* Шапка */
+    .header {
       position: sticky;
       top: 0;
-      z-index: 100;
-      background: var(--bg-card);
+      z-index: 20;
+      background: var(--bg-glass);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       border-bottom: 1px solid var(--border);
-      padding: 12px 16px;
-      box-shadow: var(--shadow);
+      padding: 14px 16px 12px;
     }
 
-    .header-container {
-      max-width: 600px;
-      margin: 0 auto;
-    }
-
-    .top-bar {
+    .header-top {
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      margin-bottom: 12px;
+      justify-content: space-between;
+      margin-bottom: 14px;
     }
 
     .venue-selector {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
       cursor: pointer;
     }
 
-    .brand-logo {
-      width: 36px;
-      height: 36px;
+    .logo-box {
+      width: 38px;
+      height: 38px;
       border-radius: 10px;
-      background: linear-gradient(135deg, #2b7fff, #1a56db);
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-light);
+      color: var(--text-primary);
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #fff;
-      font-weight: 800;
-      font-size: 15px;
-      letter-spacing: -0.5px;
-      box-shadow: 0 4px 10px rgba(43, 127, 255, 0.3);
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 0.5px;
     }
 
-    .venue-text h1 {
+    .venue-info h1 {
       font-size: 15px;
-      font-weight: 700;
+      font-weight: 600;
       display: flex;
       align-items: center;
-      gap: 5px;
+      gap: 6px;
+      color: var(--text-primary);
     }
 
-    .venue-address {
-      font-size: 11px;
-      color: var(--text-muted);
+    .venue-info p {
+      font-size: 12px;
+      color: var(--text-secondary);
       margin-top: 1px;
     }
 
-    .top-actions {
+    .header-actions {
       display: flex;
+      align-items: center;
       gap: 8px;
     }
 
     .icon-btn {
-      width: 36px;
-      height: 36px;
+      width: 38px;
+      height: 38px;
       border-radius: 10px;
-      background: var(--bg-elevated);
+      background: var(--bg-surface);
       border: 1px solid var(--border);
-      color: var(--text-main);
+      color: var(--text-primary);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 16px;
       cursor: pointer;
       position: relative;
-      transition: transform 0.15s ease;
+      transition: border-color 0.15s ease, background 0.15s ease;
     }
 
-    .icon-btn:active { transform: scale(0.92); }
+    .icon-btn:active {
+      background: var(--bg-elevated);
+    }
 
-    .notif-dot {
+    .badge-dot {
       position: absolute;
-      top: 6px;
-      right: 6px;
-      width: 8px;
-      height: 8px;
-      background: var(--danger);
+      top: 8px;
+      right: 8px;
+      width: 6px;
+      height: 6px;
       border-radius: 50%;
-      border: 1.5px solid var(--bg-card);
+      background: var(--accent-red);
     }
 
     /* Поиск и дата */
-    .search-row {
+    .controls-row {
       display: flex;
       gap: 8px;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
     }
 
-    .search-box {
+    .search-wrap {
       flex: 1;
       position: relative;
+      display: flex;
+      align-items: center;
     }
 
-    .search-box span {
+    .search-wrap svg {
       position: absolute;
       left: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 14px;
-      color: var(--text-muted);
+      color: var(--text-secondary);
+      pointer-events: none;
     }
 
     .search-input {
       width: 100%;
-      background: var(--bg-elevated);
+      height: 38px;
+      background: var(--bg-surface);
       border: 1px solid var(--border);
       border-radius: 10px;
-      padding: 9px 12px 9px 34px;
-      color: var(--text-main);
+      padding: 0 12px 0 36px;
+      color: var(--text-primary);
       font-size: 13px;
       outline: none;
-      transition: border-color 0.2s;
+      transition: border-color 0.15s ease;
+    }
+
+    .search-input::placeholder {
+      color: var(--text-muted);
     }
 
     .search-input:focus {
-      border-color: var(--primary);
+      border-color: var(--text-secondary);
     }
 
     .date-select {
-      background: var(--bg-elevated);
+      height: 38px;
+      padding: 0 12px;
+      background: var(--bg-surface);
       border: 1px solid var(--border);
       border-radius: 10px;
-      padding: 0 12px;
-      color: var(--text-main);
+      color: var(--text-primary);
       font-size: 13px;
-      font-weight: 600;
-      outline: none;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 6px;
       cursor: pointer;
+      white-space: nowrap;
     }
 
-    /* Табы статусов */
-    .status-tabs {
+    /* Фильтры */
+    .tabs-row {
       display: flex;
       gap: 6px;
       overflow-x: auto;
       scrollbar-width: none;
+      margin: 0 -16px;
+      padding: 0 16px;
     }
-    .status-tabs::-webkit-scrollbar { display: none; }
 
-    .tab-btn {
-      background: var(--bg-elevated);
+    .tabs-row::-webkit-scrollbar {
+      display: none;
+    }
+
+    .tab-pill {
+      height: 32px;
+      padding: 0 12px;
+      border-radius: 8px;
+      background: var(--bg-surface);
       border: 1px solid var(--border);
-      color: var(--text-muted);
-      padding: 6px 12px;
-      border-radius: 20px;
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      white-space: nowrap;
+      color: var(--text-secondary);
+      font-size: 13px;
+      font-weight: 500;
       display: flex;
       align-items: center;
       gap: 6px;
-      transition: all 0.2s ease;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s ease;
     }
 
-    .tab-btn.active {
-      background: var(--primary);
-      border-color: var(--primary);
-      color: #fff;
+    .tab-pill.active {
+      background: var(--text-primary);
+      color: var(--bg-main);
+      border-color: var(--text-primary);
     }
 
     .tab-count {
-      background: rgba(0, 0, 0, 0.2);
-      padding: 1px 6px;
-      border-radius: 10px;
       font-size: 11px;
+      padding: 1px 5px;
+      border-radius: 4px;
+      background: var(--bg-elevated);
+      color: var(--text-secondary);
     }
 
-    .tab-btn.active .tab-count {
-      background: rgba(255, 255, 255, 0.25);
-      color: #fff;
+    .tab-pill.active .tab-count {
+      background: rgba(128, 128, 128, 0.25);
+      color: inherit;
     }
 
-    /* Контейнер контента */
-    .main-container {
-      max-width: 600px;
-      margin: 14px auto;
-      padding: 0 14px;
-    }
-
-    /* Баннер новых броней (вместо уродливой зеленой кнопки) */
-    .incoming-alert {
-      background: linear-gradient(135deg, rgba(16, 185, 129, 0.18), rgba(16, 185, 129, 0.05));
-      border: 1px solid rgba(16, 185, 129, 0.4);
-      border-radius: var(--radius-md);
-      padding: 12px 14px;
-      margin-bottom: 14px;
+    /* Контент */
+    .container {
+      padding: 16px;
       display: flex;
-      justify-content: space-between;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* Баннер новых заявок */
+    .batch-banner {
+      background: var(--accent-green-bg);
+      border: 1px solid var(--accent-green-border);
+      border-radius: 12px;
+      padding: 12px 14px;
+      display: flex;
       align-items: center;
-      cursor: pointer;
-      animation: pulseBorder 2s infinite;
+      justify-content: space-between;
+      gap: 12px;
     }
 
-    @keyframes pulseBorder {
-      0%, 100% { border-color: rgba(16, 185, 129, 0.4); }
-      50% { border-color: rgba(16, 185, 129, 0.9); }
-    }
-
-    .incoming-left {
+    .batch-info {
       display: flex;
       align-items: center;
       gap: 10px;
     }
 
     .pulse-dot {
-      width: 10px;
-      height: 10px;
+      width: 8px;
+      height: 8px;
       border-radius: 50%;
-      background: var(--success);
-      box-shadow: 0 0 10px var(--success);
+      background: var(--accent-green);
+      flex-shrink: 0;
     }
 
-    .incoming-title {
+    .batch-text h3 {
       font-size: 13px;
-      font-weight: 700;
-      color: var(--text-main);
+      font-weight: 600;
+      color: var(--text-primary);
     }
 
-    .incoming-sub {
-      font-size: 11px;
-      color: var(--text-muted);
-    }
-
-    .incoming-btn {
-      background: var(--success);
-      color: #fff;
-      border: none;
-      padding: 7px 12px;
-      border-radius: 8px;
+    .batch-text p {
       font-size: 12px;
-      font-weight: 700;
+      color: var(--text-secondary);
+    }
+
+    .btn-batch {
+      background: var(--accent-green);
+      color: #000000;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 12px;
+      font-weight: 600;
       cursor: pointer;
+      white-space: nowrap;
     }
 
     /* Карточка брони */
-    .booking-card {
-      background: var(--bg-card);
+    .card {
+      background: var(--bg-surface);
       border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding: 14px 16px;
-      margin-bottom: 10px;
-      transition: transform 0.15s ease, border-color 0.2s ease;
-      cursor: pointer;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .booking-card:active {
-      transform: scale(0.99);
-    }
-
-    .booking-card.status-new {
-      border-left: 4px solid var(--warning);
-    }
-    .booking-card.status-confirmed {
-      border-left: 4px solid var(--success);
-    }
-    .booking-card.status-cancelled {
-      border-left: 4px solid var(--danger);
-      opacity: 0.78;
+      border-radius: 14px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: border-color 0.15s ease;
     }
 
     .card-top {
       display: flex;
+      align-items: center;
       justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 10px;
     }
 
-    .datetime-group {
+    .time-group {
       display: flex;
       align-items: baseline;
-      gap: 8px;
+      gap: 10px;
     }
 
-    .booking-time {
+    .time {
       font-size: 20px;
-      font-weight: 800;
+      font-weight: 700;
       letter-spacing: -0.5px;
-      color: var(--text-main);
+      color: var(--text-primary);
     }
 
-    .booking-date {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text-muted);
-      background: var(--bg-elevated);
-      padding: 3px 8px;
-      border-radius: 6px;
+    .meta-inline {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text-secondary);
     }
 
-    .guests-pill {
+    .meta-inline span {
       display: inline-flex;
       align-items: center;
       gap: 4px;
-      background: var(--primary-dim);
-      color: var(--primary);
-      font-weight: 700;
-      font-size: 12px;
-      padding: 3px 8px;
-      border-radius: 6px;
     }
 
     .status-badge {
       font-size: 11px;
-      font-weight: 700;
-      padding: 4px 9px;
-      border-radius: 8px;
-      text-transform: uppercase;
+      font-weight: 600;
+      padding: 4px 8px;
+      border-radius: 6px;
       letter-spacing: 0.3px;
+      text-transform: uppercase;
     }
 
-    .badge-new { background: var(--warning-bg); color: var(--warning); }
-    .badge-confirmed { background: var(--success-bg); color: var(--success); }
-    .badge-cancelled { background: var(--danger-bg); color: var(--danger); }
+    .status-pending {
+      background: var(--accent-amber-bg);
+      color: var(--accent-amber);
+    }
 
-    .card-middle {
+    .status-confirmed {
+      background: var(--accent-green-bg);
+      color: var(--accent-green);
+    }
+
+    .card-main {
       display: flex;
+      align-items: flex-start;
       justify-content: space-between;
-      align-items: center;
+      gap: 12px;
     }
 
-    .guest-name {
-      font-size: 15px;
-      font-weight: 700;
-      margin-bottom: 3px;
+    .guest-info h2 {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 4px;
     }
 
-    .guest-phone {
-      font-size: 13px;
-      color: var(--text-muted);
-      text-decoration: none;
+    .phone-link {
       display: inline-flex;
       align-items: center;
-      gap: 5px;
-    }
-
-    .table-tag {
-      font-size: 12px;
-      color: var(--text-muted);
-      background: var(--bg-elevated);
-      padding: 5px 10px;
-      border-radius: 8px;
-      font-weight: 600;
-    }
-
-    .guest-note {
-      margin-top: 10px;
-      padding: 8px 10px;
-      background: var(--bg-elevated);
-      border-radius: 8px;
-      font-size: 12px;
-      color: var(--text-muted);
-      display: flex;
       gap: 6px;
-      align-items: center;
+      font-size: 13px;
+      color: var(--text-secondary);
+      text-decoration: none;
     }
 
-    /* Быстрые кнопки подтверждения для новых броней */
-    .quick-actions {
-      margin-top: 12px;
-      padding-top: 12px;
-      border-top: 1px solid var(--border);
+    .table-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .table-chip.assigned {
+      color: var(--text-primary);
+    }
+
+    .comment-box {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 10px 12px;
+      background: var(--bg-elevated);
+      border-radius: 8px;
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .comment-box svg {
+      margin-top: 2px;
+      color: var(--text-muted);
+    }
+
+    .card-actions {
       display: flex;
       gap: 8px;
+      padding-top: 2px;
+    }
+
+    .btn {
+      height: 40px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: opacity 0.15s ease, transform 0.1s ease;
+    }
+
+    .btn:active {
+      transform: scale(0.98);
     }
 
     .btn-accept {
-      flex: 2;
-      background: var(--success);
-      color: #fff;
-      border: none;
-      padding: 9px;
-      border-radius: 8px;
-      font-weight: 700;
-      font-size: 13px;
-      cursor: pointer;
-    }
-
-    .btn-decline {
       flex: 1;
-      background: var(--danger-bg);
-      color: var(--danger);
-      border: none;
-      padding: 9px;
-      border-radius: 8px;
-      font-weight: 700;
-      font-size: 13px;
-      cursor: pointer;
+      background: var(--text-primary);
+      color: var(--bg-main);
     }
 
-    /* Плавающая кнопка + Бронь */
-    .fab-wrap {
+    .btn-reject {
+      padding: 0 16px;
+      background: transparent;
+      border-color: var(--border-light);
+      color: var(--accent-red);
+    }
+
+    /* Кнопка Новая бронь */
+    .fab-new {
       position: fixed;
       bottom: 20px;
-      left: 0;
-      right: 0;
-      max-width: 600px;
-      margin: 0 auto;
-      padding: 0 16px;
-      z-index: 90;
-      pointer-events: none;
-      display: flex;
-      justify-content: flex-end;
-    }
-
-    .fab-btn {
-      pointer-events: auto;
-      background: var(--primary);
-      color: #fff;
+      right: 16px;
+      z-index: 30;
+      height: 48px;
+      padding: 0 20px;
+      border-radius: 24px;
+      background: var(--accent-blue);
+      color: #FFFFFF;
       border: none;
-      padding: 13px 20px;
-      border-radius: 30px;
       font-size: 14px;
-      font-weight: 700;
-      box-shadow: 0 8px 20px rgba(43, 127, 255, 0.4);
-      cursor: pointer;
+      font-weight: 600;
       display: flex;
       align-items: center;
       gap: 8px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+      cursor: pointer;
     }
 
-    /* Модальные шторки (Bottom Sheet) */
+    /* Перетаскиваемая кнопка FAQ */
+    .draggable-faq {
+      position: fixed;
+      right: 16px;
+      bottom: 80px;
+      z-index: 40;
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-light);
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.6);
+      cursor: grab;
+      touch-action: none;
+      user-select: none;
+      -webkit-user-select: none;
+      transition: transform 0.15s ease, border-color 0.15s ease;
+    }
+
+    .draggable-faq.dragging {
+      cursor: grabbing;
+      transform: scale(1.08);
+      border-color: var(--text-secondary);
+      transition: none;
+    }
+
+    /* Модальное окно FAQ */
     .modal-overlay {
-      display: none;
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.65);
+      z-index: 50;
+      background: rgba(0, 0, 0, 0.75);
       backdrop-filter: blur(4px);
-      z-index: 200;
+      -webkit-backdrop-filter: blur(4px);
+      display: none;
       align-items: flex-end;
       justify-content: center;
     }
@@ -510,475 +553,458 @@
       display: flex;
     }
 
-    .bottom-sheet {
-      background: var(--bg-card);
+    .modal-sheet {
       width: 100%;
-      max-width: 600px;
-      border-radius: 22px 22px 0 0;
-      padding: 18px 20px 30px;
-      border-top: 1px solid var(--border);
-      animation: slideUp 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+      max-width: 500px;
+      background: var(--bg-surface);
+      border-top: 1px solid var(--border-light);
+      border-radius: 20px 20px 0 0;
+      padding: 20px 16px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
     }
 
-    @keyframes slideUp {
-      from { transform: translateY(100%); }
-      to { transform: translateY(0); }
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
 
-    .sheet-pill {
-      width: 40px;
-      height: 4px;
-      background: var(--text-muted);
-      opacity: 0.3;
-      border-radius: 4px;
-      margin: 0 auto 16px;
+    .modal-header h3 {
+      font-size: 16px;
+      font-weight: 600;
     }
 
-    .sheet-title {
-      font-size: 18px;
-      font-weight: 800;
-      margin-bottom: 12px;
-    }
-
-    .sheet-text {
-      font-size: 13px;
-      line-height: 1.5;
-      color: var(--text-muted);
-      margin-bottom: 14px;
-    }
-
-    .form-input {
-      width: 100%;
+    .faq-item {
+      padding: 12px;
       background: var(--bg-elevated);
       border: 1px solid var(--border);
       border-radius: 10px;
-      padding: 11px 14px;
-      color: var(--text-main);
-      font-size: 14px;
-      margin-bottom: 10px;
-      outline: none;
     }
 
-    .sheet-btn {
-      width: 100%;
-      background: var(--primary);
-      color: #fff;
-      border: none;
-      padding: 13px;
-      border-radius: 12px;
-      font-weight: 700;
-      font-size: 15px;
-      cursor: pointer;
-      margin-top: 6px;
+    .faq-item h4 {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 4px;
     }
 
-    .empty-box {
-      text-align: center;
-      padding: 45px 20px;
-      color: var(--text-muted);
-      font-size: 14px;
+    .faq-item p {
+      font-size: 12px;
+      color: var(--text-secondary);
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <div class="header-container">
-      <div class="top-bar">
-        <div class="venue-selector" onclick="haptic('light')">
-          <div class="brand-logo">ТМ</div>
-          <div class="venue-text">
-            <h1>Grand Lounge & Bar <span>▾</span></h1>
-            <div class="venue-address">ул. Покровка, д. 31, с. 4</div>
-          </div>
-        </div>
-        <div class="top-actions">
-          <button class="icon-btn" onclick="toggleTheme()" title="Сменить тему">🌓</button>
-          <button class="icon-btn" onclick="openHelpModal()" title="Как пользоваться">❓</button>
-          <button class="icon-btn" onclick="filterByNew()" title="Уведомления">
-            🔔
-            <span class="notif-dot" id="notifDot"></span>
-          </button>
+  <!-- Верхняя панель -->
+  <header class="header">
+    <div class="header-top">
+      <div class="venue-selector">
+        <div class="logo-box">ТМ</div>
+        <div class="venue-info">
+          <h1>
+            Grand Lounge & Bar
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m6 9 6 6 6-6"/>
+            </svg>
+          </h1>
+          <p>ул. Покровка, д. 31, с. 4</p>
         </div>
       </div>
 
-      <div class="search-row">
-        <div class="search-box">
-          <span>🔍</span>
-          <input type="text" id="searchInput" class="search-input" placeholder="Имя гостя, телефон или стол..." oninput="renderBookings()">
-        </div>
-        <select id="dateFilter" class="date-select" onchange="haptic('light'); renderBookings()">
-          <option value="all">Все даты</option>
-          <option value="18.10" selected>18.10 (Вс)</option>
-          <option value="19.10">19.10 (Пн)</option>
-        </select>
+      <div class="header-actions">
+        <button class="icon-btn" id="themeBtn" aria-label="Сменить тему">
+          <svg id="themeIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
+          </svg>
+        </button>
+        <button class="icon-btn" aria-label="Уведомления">
+          <span class="badge-dot"></span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/>
+            <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>
+          </svg>
+        </button>
       </div>
+    </div>
 
-      <div class="status-tabs">
-        <button class="tab-btn active" onclick="setStatusFilter('all', this)">
-          Все <span class="tab-count" id="count-all">0</span>
-        </button>
-        <button class="tab-btn" id="tab-new" onclick="setStatusFilter('new', this)">
-          ⚡ Новые <span class="tab-count" id="count-new">0</span>
-        </button>
-        <button class="tab-btn" onclick="setStatusFilter('confirmed', this)">
-          Подтверждены <span class="tab-count" id="count-confirmed">0</span>
-        </button>
-        <button class="tab-btn" onclick="setStatusFilter('cancelled', this)">
-          Отменены <span class="tab-count" id="count-cancelled">0</span>
-        </button>
+    <div class="controls-row">
+      <div class="search-wrap">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/>
+          <path d="m21 21-4.3-4.3"/>
+        </svg>
+        <input type="text" class="search-input" id="searchInput" placeholder="Имя гостя, телефон или стол...">
       </div>
+      <button class="date-select">
+        <span>18.10 (Вс)</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m7 15 5 5 5-5"/>
+          <path d="m7 9 5-5 5 5"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="tabs-row" id="tabsRow">
+      <button class="tab-pill active" data-filter="all">
+        Все <span class="tab-count">4</span>
+      </button>
+      <button class="tab-pill" data-filter="new">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+        </svg>
+        Новые <span class="tab-count">2</span>
+      </button>
+      <button class="tab-pill" data-filter="confirmed">
+        Подтверждены <span class="tab-count">1</span>
+      </button>
+      <button class="tab-pill" data-filter="seated">
+        Открыты <span class="tab-count">1</span>
+      </button>
     </div>
   </header>
 
-  <div class="main-container">
-    <!-- Умный баннер новых броней -->
-    <div class="incoming-alert" id="incomingBanner" onclick="filterByNew()">
-      <div class="incoming-left">
-        <div class="pulse-dot"></div>
-        <div>
-          <div class="incoming-title" id="incomingTitle">Новые заявки на бронь (2)</div>
-          <div class="incoming-sub">Требуют подтверждения хостес</div>
+  <!-- Список броней -->
+  <main class="container" id="bookingsList">
+    <!-- Плашка массового подтверждения -->
+    <div class="batch-banner" id="batchBanner">
+      <div class="batch-info">
+        <span class="pulse-dot"></span>
+        <div class="batch-text">
+          <h3>Новые заявки на бронь (2)</h3>
+          <p>Требуют подтверждения хостес</p>
         </div>
       </div>
-      <button class="incoming-btn" onclick="event.stopPropagation(); acceptAllNew()">Принять все</button>
+      <button class="btn-batch" id="acceptAllBtn">Принять все</button>
     </div>
 
-    <div id="bookingsList"></div>
-  </div>
-
-  <div class="fab-wrap">
-    <button class="fab-btn" onclick="openAddBookingModal()">
-      <span>＋</span> Новая бронь
-    </button>
-  </div>
-
-  <!-- Модалка: Справка и обратная связь (убрали мусор с главного экрана) -->
-  <div class="modal-overlay" id="helpModal" onclick="if(event.target===this) closeHelpModal()">
-    <div class="bottom-sheet">
-      <div class="sheet-pill"></div>
-      <div class="sheet-title">О сервисе «ТоМесто Брони»</div>
-      <div class="sheet-text">
-        • <b>Новые брони</b> подсвечиваются желтым индикатором — подтвердите или отклоните их в один клик.<br>
-        • Нажмите на номер телефона для быстрого вызова гостя.<br>
-        • Нажмите на карточку брони, чтобы назначить стол или изменить статус.
+    <!-- Карточка 1 -->
+    <article class="card" data-status="new">
+      <div class="card-top">
+        <div class="time-group">
+          <span class="time">18:30</span>
+          <div class="meta-inline">
+            <span>18.10 (вс)</span>
+            <span>•</span>
+            <span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+                <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+              </svg>
+              4 гостя
+            </span>
+          </div>
+        </div>
+        <span class="status-badge status-pending">Ожидает</span>
       </div>
-      <div class="sheet-title" style="font-size:15px; margin-top:16px;">Есть идеи по улучшению?</div>
-      <input type="text" id="feedbackText" class="form-input" placeholder="Напишите ваше предложение разработчикам...">
-      <button class="sheet-btn" onclick="sendFeedback()">Отправить в ТоМесто</button>
-    </div>
-  </div>
 
-  <!-- Модалка: Добавление ручной брони -->
-  <div class="modal-overlay" id="addBookingModal" onclick="if(event.target===this) closeAddBookingModal()">
-    <div class="bottom-sheet">
-      <div class="sheet-pill"></div>
-      <div class="sheet-title">Добавить бронь в зал</div>
-      <input type="text" id="bName" class="form-input" placeholder="Имя гостя (например, Александр)">
-      <input type="tel" id="bPhone" class="form-input" placeholder="Телефон (+7 999 000-00-00)">
-      <div style="display:flex; gap:8px;">
-        <input type="time" id="bTime" class="form-input" value="19:00">
-        <input type="number" id="bGuests" class="form-input" placeholder="Гостей (2)" value="2" min="1" max="20">
+      <div class="card-main">
+        <div class="guest-info">
+          <h2>Алексей Смирнов</h2>
+          <a href="tel:+79264180012" class="phone-link">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+            </svg>
+            +7 926 418-XX-12
+          </a>
+        </div>
+        <div class="table-chip">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect width="18" height="18" x="3" y="3" rx="2"/>
+            <path d="M3 9h18"/>
+            <path d="M9 21V9"/>
+          </svg>
+          Стол не назначен
+        </div>
       </div>
-      <input type="text" id="bNote" class="form-input" placeholder="Комментарий (Стол у окна, некурящий зал...)">
-      <button class="sheet-btn" onclick="createNewBooking()">Создать бронь</button>
-    </div>
-  </div>
 
-  <!-- Модалка: Детали конкретной брони -->
-  <div class="modal-overlay" id="detailsModal" onclick="if(event.target===this) closeDetailsModal()">
-    <div class="bottom-sheet" id="detailsContent"></div>
+      <div class="comment-box">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+        </svg>
+        <span>VIP-зона или мягкий диван, день рождения</span>
+      </div>
+
+      <div class="card-actions">
+        <button class="btn btn-accept">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 6 9 17l-5-5"/>
+          </svg>
+          Принять бронь
+        </button>
+        <button class="btn btn-reject">Отклонить</button>
+      </div>
+    </article>
+
+    <!-- Карточка 2 -->
+    <article class="card" data-status="new">
+      <div class="card-top">
+        <div class="time-group">
+          <span class="time">19:00</span>
+          <div class="meta-inline">
+            <span>18.10 (вс)</span>
+            <span>•</span>
+            <span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+              </svg>
+              2 гостя
+            </span>
+          </div>
+        </div>
+        <span class="status-badge status-pending">Ожидает</span>
+      </div>
+
+      <div class="card-main">
+        <div class="guest-info">
+          <h2>Мария Волкова</h2>
+          <a href="tel:+79168020055" class="phone-link">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+            </svg>
+            +7 916 802-XX-55
+          </a>
+        </div>
+        <div class="table-chip assigned">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect width="18" height="18" x="3" y="3" rx="2"/>
+            <path d="M3 9h18"/>
+            <path d="M9 21V9"/>
+          </svg>
+          Стол #7
+        </div>
+      </div>
+
+      <div class="comment-box">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+        </svg>
+        <span>Просили тихое место для свидания</span>
+      </div>
+
+      <div class="card-actions">
+        <button class="btn btn-accept">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 6 9 17l-5-5"/>
+          </svg>
+          Принять бронь
+        </button>
+        <button class="btn btn-reject">Отклонить</button>
+      </div>
+    </article>
+
+    <!-- Карточка 3 (Подтвержденная) -->
+    <article class="card" data-status="confirmed">
+      <div class="card-top">
+        <div class="time-group">
+          <span class="time">16:00</span>
+          <div class="meta-inline">
+            <span>18.10 (вс)</span>
+            <span>•</span>
+            <span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+              </svg>
+              3 гостя
+            </span>
+          </div>
+        </div>
+        <span class="status-badge status-confirmed">Подтверждена</span>
+      </div>
+
+      <div class="card-main">
+        <div class="guest-info">
+          <h2>Дмитрий Соколов</h2>
+          <a href="tel:+79031120099" class="phone-link">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+            </svg>
+            +7 903 112-XX-99
+          </a>
+        </div>
+        <div class="table-chip assigned">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect width="18" height="18" x="3" y="3" rx="2"/>
+            <path d="M3 9h18"/>
+            <path d="M9 21V9"/>
+          </svg>
+          Стол #12
+        </div>
+      </div>
+    </article>
+  </main>
+
+  <!-- Перетаскиваемая кнопка FAQ (по дефолту правый нижний угол) -->
+  <button class="draggable-faq" id="faqBtn" aria-label="Справка и вопросы">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"/>
+      <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+      <path d="M12 17h.01"/>
+    </svg>
+  </button>
+
+  <!-- Фиксированная кнопка Новая бронь -->
+  <button class="fab-new">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 5v14"/>
+      <path d="M5 12h14"/>
+    </svg>
+    Новая бронь
+  </button>
+
+  <!-- Модалка с вопросами -->
+  <div class="modal-overlay" id="faqModal">
+    <div class="modal-sheet">
+      <div class="modal-header">
+        <h3>Частые вопросы</h3>
+        <button class="icon-btn" id="closeFaqBtn" style="width:32px;height:32px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 6 6 18"/>
+            <path d="m6 6 12 12"/>
+          </svg>
+        </button>
+      </div>
+      <div class="faq-item">
+        <h4>Как переместить кнопку помощи?</h4>
+        <p>Зажмите иконку вопроса пальцем и перетащите в любую удобную точку экрана.</p>
+      </div>
+      <div class="faq-item">
+        <h4>Как назначить стол?</h4>
+        <p>Нажмите на плашку «Стол не назначен» в карточке гостя для выбора схемы зала.</p>
+      </div>
+      <div class="faq-item">
+        <h4>Скрытие номера телефона</h4>
+        <p>Полный номер открывается при клике по нему для совершения звонка гостю.</p>
+      </div>
+    </div>
   </div>
 
   <script>
-    const tg = window.Telegram?.WebApp;
-    if (tg) {
-      tg.ready();
-      tg.expand();
-    }
+    // Переключение темы (True Black / Clean Light)
+    const themeBtn = document.getElementById('themeBtn');
+    const themeIcon = document.getElementById('themeIcon');
+    const root = document.documentElement;
 
-    function haptic(type = 'light') {
-      if (!tg?.HapticFeedback) return;
-      if (['success', 'warning', 'error'].includes(type)) {
-        tg.HapticFeedback.notificationOccurred(type);
+    themeBtn.addEventListener('click', () => {
+      const isDark = root.getAttribute('data-theme') === 'dark';
+      const nextTheme = isDark ? 'light' : 'dark';
+      root.setAttribute('data-theme', nextTheme);
+
+      if (nextTheme === 'light') {
+        themeIcon.innerHTML = '<circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>';
       } else {
-        tg.HapticFeedback.impactOccurred(type);
+        themeIcon.innerHTML = '<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>';
       }
-    }
+    });
 
-    // Стартовая база с реальным примером со скрина + живыми кейсами
-    let bookings = [
-      {
-        id: 1,
-        date: "18.10",
-        day: "вс",
-        time: "18:30",
-        guests: 4,
-        name: "Алексей Смирнов",
-        phone: "+7 926 418-XX-12",
-        status: "new",
-        table: "Стол не назначен",
-        note: "VIP-зона или мягкий диван, день рождения"
-      },
-      {
-        id: 2,
-        date: "18.10",
-        day: "вс",
-        time: "19:00",
-        guests: 2,
-        name: "Мария Волкова",
-        phone: "+7 916 802-XX-55",
-        status: "new",
-        table: "Стол #7",
-        note: "Просили тихое место для свидания"
-      },
-      {
-        id: 3,
-        date: "18.10",
-        day: "вс",
-        time: "16:00",
-        guests: 3,
-        name: "Дмитрий К.",
-        phone: "+7 903 551-XX-90",
-        status: "confirmed",
-        table: "Стол #14 (Камин)",
-        note: "Постоянный гость"
-      },
-      {
-        id: 4,
-        date: "18.10",
-        day: "вс",
-        time: "14:00",
-        guests: 2,
-        name: "Иван",
-        phone: "+7 981 XXX-XX-73",
-        status: "cancelled",
-        table: "Стол #4",
-        note: "Отмена через бот за 40 минут до визита"
-      },
-      {
-        id: 5,
-        date: "19.10",
-        day: "пн",
-        time: "20:00",
-        guests: 6,
-        name: "Артем и компания",
-        phone: "+7 999 114-XX-08",
-        status: "confirmed",
-        table: "Стол #1 (Большой)",
-        note: "Предоплата 5000 ₽ внесена"
+    // Логика Drag-and-Drop для плавающей кнопки вопросов
+    const faqBtn = document.getElementById('faqBtn');
+    const faqModal = document.getElementById('faqModal');
+    const closeFaqBtn = document.getElementById('closeFaqBtn');
+
+    let isDragging = false;
+    let hasMoved = false;
+    let startX = 0;
+    let startY = 0;
+    let initialLeft = 0;
+    let initialTop = 0;
+
+    const onPointerDown = (e) => {
+      isDragging = true;
+      hasMoved = false;
+      faqBtn.classList.add('dragging');
+
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+      startX = clientX;
+      startY = clientY;
+
+      const rect = faqBtn.getBoundingClientRect();
+      initialLeft = rect.left;
+      initialTop = rect.top;
+
+      faqBtn.style.left = `${initialLeft}px`;
+      faqBtn.style.top = `${initialTop}px`;
+      faqBtn.style.right = 'auto';
+      faqBtn.style.bottom = 'auto';
+    };
+
+    const onPointerMove = (e) => {
+      if (!isDragging) return;
+
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+      const dx = clientX - startX;
+      const dy = clientY - startY;
+
+      if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
+        hasMoved = true;
       }
-    ];
 
-    let activeStatusFilter = 'all';
+      const btnWidth = faqBtn.offsetWidth;
+      const btnHeight = faqBtn.offsetHeight;
+      const padding = 12;
 
-    function toggleTheme() {
-      haptic('light');
-      document.body.classList.toggle('light-theme');
-    }
+      let newLeft = initialLeft + dx;
+      let newTop = initialTop + dy;
 
-    function setStatusFilter(status, btnEl) {
-      haptic('light');
-      activeStatusFilter = status;
-      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-      if (btnEl) btnEl.classList.add('active');
-      renderBookings();
-    }
+      // Ограничение в пределах экрана
+      newLeft = Math.max(padding, Math.min(window.innerWidth - btnWidth - padding, newLeft));
+      newTop = Math.max(padding, Math.min(window.innerHeight - btnHeight - padding, newTop));
 
-    function filterByNew() {
-      const newTab = document.getElementById('tab-new');
-      setStatusFilter('new', newTab);
-    }
+      faqBtn.style.left = `${newLeft}px`;
+      faqBtn.style.top = `${newTop}px`;
+    };
 
-    function updateCounters() {
-      const dateVal = document.getElementById('dateFilter').value;
-      const byDate = bookings.filter(b => dateVal === 'all' || b.date === dateVal);
+    const onPointerUp = () => {
+      if (!isDragging) return;
+      isDragging = false;
+      faqBtn.classList.remove('dragging');
 
-      const newCount = byDate.filter(b => b.status === 'new').length;
-      const confCount = byDate.filter(b => b.status === 'confirmed').length;
-      const cancCount = byDate.filter(b => b.status === 'cancelled').length;
-
-      document.getElementById('count-all').textContent = byDate.length;
-      document.getElementById('count-new').textContent = newCount;
-      document.getElementById('count-confirmed').textContent = confCount;
-      document.getElementById('count-cancelled').textContent = cancCount;
-
-      const banner = document.getElementById('incomingBanner');
-      const dot = document.getElementById('notifDot');
-      const totalNewAllDates = bookings.filter(b => b.status === 'new').length;
-
-      if (totalNewAllDates > 0) {
-        banner.style.display = 'flex';
-        dot.style.display = 'block';
-        document.getElementById('incomingTitle').textContent = `Новые заявки на бронь (${totalNewAllDates})`;
-      } else {
-        banner.style.display = 'none';
-        dot.style.display = 'none';
+      if (!hasMoved) {
+        faqModal.classList.add('open');
       }
-    }
+    };
 
-    function renderBookings() {
-      updateCounters();
-      const query = document.getElementById('searchInput').value.trim().toLowerCase();
-      const dateVal = document.getElementById('dateFilter').value;
-      const listEl = document.getElementById('bookingsList');
-      listEl.innerHTML = '';
+    faqBtn.addEventListener('touchstart', onPointerDown, { passive: true });
+    window.addEventListener('touchmove', onPointerMove, { passive: true });
+    window.addEventListener('touchend', onPointerUp);
 
-      const filtered = bookings.filter(b => {
-        if (dateVal !== 'all' && b.date !== dateVal) return false;
-        if (activeStatusFilter !== 'all' && b.status !== activeStatusFilter) return false;
-        if (query) {
-          const hay = `${b.name} ${b.phone} ${b.table} ${b.time}`.toLowerCase();
-          return hay.includes(query);
-        }
-        return true;
+    faqBtn.addEventListener('mousedown', onPointerDown);
+    window.addEventListener('mousemove', onPointerMove);
+    window.addEventListener('mouseup', onPointerUp);
+
+    closeFaqBtn.addEventListener('click', () => faqModal.classList.remove('open'));
+    faqModal.addEventListener('click', (e) => {
+      if (e.target === faqModal) faqModal.classList.remove('open');
+    });
+
+    // Фильтрация табов
+    const tabs = document.querySelectorAll('.tab-pill');
+    const cards = document.querySelectorAll('.card');
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        const filter = tab.getAttribute('data-filter');
+
+        cards.forEach(card => {
+          if (filter === 'all' || card.getAttribute('data-status') === filter) {
+            card.style.display = 'flex';
+          } else {
+            card.style.display = 'none';
+          }
+        });
       });
-
-      if (filtered.length === 0) {
-        listEl.innerHTML = `<div class="empty-box">Броней по выбранным фильтрам нет</div>`;
-        return;
-      }
-
-      const statusLabels = {
-        new: { text: "Ожидает", cls: "badge-new" },
-        confirmed: { text: "Подтверждена", cls: "badge-confirmed" },
-        cancelled: { text: "Гость отменил", cls: "badge-cancelled" }
-      };
-
-      filtered.forEach(b => {
-        const st = statusLabels[b.status];
-        const card = document.createElement('div');
-        card.className = `booking-card status-${b.status}`;
-        card.onclick = () => openDetailsModal(b.id);
-
-        card.innerHTML = `
-          <div class="card-top">
-            <div class="datetime-group">
-              <span class="booking-time">${b.time}</span>
-              <span class="booking-date">${b.date} (${b.day})</span>
-              <span class="guests-pill">👤 ${b.guests} гостя</span>
-            </div>
-            <span class="status-badge ${st.cls}">${st.text}</span>
-          </div>
-
-          <div class="card-middle">
-            <div>
-              <div class="guest-name">${b.name}</div>
-              <a href="tel:${b.phone}" class="guest-phone" onclick="event.stopPropagation()">
-                📞 ${b.phone}
-              </a>
-            </div>
-            <div class="table-tag">🪑 ${b.table}</div>
-          </div>
-
-          ${b.note ? `<div class="guest-note">💬 <span>${b.note}</span></div>` : ''}
-
-          ${b.status === 'new' ? `
-            <div class="quick-actions" onclick="event.stopPropagation()">
-              <button class="btn-accept" onclick="changeStatus(${b.id}, 'confirmed')">✓ Принять бронь</button>
-              <button class="btn-decline" onclick="changeStatus(${b.id}, 'cancelled')">Отклонить</button>
-            </div>
-          ` : ''}
-        `;
-        listEl.appendChild(card);
-      });
-    }
-
-    function changeStatus(id, newStatus) {
-      haptic(newStatus === 'confirmed' ? 'success' : 'warning');
-      const item = bookings.find(b => b.id === id);
-      if (item) {
-        item.status = newStatus;
-        renderBookings();
-        closeDetailsModal();
-      }
-    }
-
-    function acceptAllNew() {
-      haptic('success');
-      bookings.forEach(b => {
-        if (b.status === 'new') b.status = 'confirmed';
-      });
-      renderBookings();
-    }
-
-    function openDetailsModal(id) {
-      haptic('light');
-      const b = bookings.find(x => x.id === id);
-      if (!b) return;
-      const box = document.getElementById('detailsContent');
-      box.innerHTML = `
-        <div class="sheet-pill"></div>
-        <div class="sheet-title">${b.name} — ${b.time} (${b.date})</div>
-        <div class="sheet-text">
-          <b>Телефон:</b> ${b.phone}<br>
-          <b>Количество гостей:</b> ${b.guests} чел.<br>
-          <b>Текущий стол:</b> ${b.table}<br>
-          <b>Заметка:</b> ${b.note || 'Нет комментариев'}
-        </div>
-        <div style="display:flex; gap:8px; margin-top:12px;">
-          <button class="btn-accept" onclick="changeStatus(${b.id}, 'confirmed')">Подтвердить</button>
-          <button class="btn-decline" onclick="changeStatus(${b.id}, 'cancelled')">Отменить бронь</button>
-        </div>
-      `;
-      document.getElementById('detailsModal').classList.add('open');
-    }
-
-    function closeDetailsModal() {
-      document.getElementById('detailsModal').classList.remove('open');
-    }
-
-    function openHelpModal() {
-      haptic('light');
-      document.getElementById('helpModal').classList.add('open');
-    }
-    function closeHelpModal() {
-      document.getElementById('helpModal').classList.remove('open');
-    }
-
-    function sendFeedback() {
-      haptic('success');
-      document.getElementById('feedbackText').value = '';
-      closeHelpModal();
-    }
-
-    function openAddBookingModal() {
-      haptic('light');
-      document.getElementById('addBookingModal').classList.add('open');
-    }
-    function closeAddBookingModal() {
-      document.getElementById('addBookingModal').classList.remove('open');
-    }
-
-    function createNewBooking() {
-      const name = document.getElementById('bName').value.trim() || 'Гость с линии';
-      const phone = document.getElementById('bPhone').value.trim() || '+7 900 000-00-00';
-      const time = document.getElementById('bTime').value || '19:00';
-      const guests = parseInt(document.getElementById('bGuests').value) || 2;
-      const note = document.getElementById('bNote').value.trim();
-
-      haptic('success');
-      bookings.unshift({
-        id: Date.now(),
-        date: "18.10",
-        day: "вс",
-        time,
-        guests,
-        name,
-        phone,
-        status: "confirmed",
-        table: "Стол #5",
-        note
-      });
-
-      document.getElementById('bName').value = '';
-      document.getElementById('bPhone').value = '';
-      document.getElementById('bNote').value = '';
-      closeAddBookingModal();
-      renderBookings();
-    }
-
-    renderBookings();
+    });
   </script>
 </body>
 </html>
