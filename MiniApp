@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>ТоМесто Брони — PRO Concept</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    :root {
+      --bg-main: #0f1115;
+      --bg-card: #181b22;
+      --bg-elevated: #222630;
+      --primary: #2b7fff;
+      --primary-dim: rgba(43, 127, 255, 0.15);
+      --text-main: #f3f4f6;
+      --text-muted: #8b92a5;
+      --success: #10b981;
+      --success-bg: rgba(16, 185, 129, 0.14);
+      --warning: #f59e0b;
+      --warning-bg: rgba(245, 158, 11, 0.15);
+      --danger: #ef4444;
+      --danger-bg: rgba(239, 68, 68, 0.14);
+      --border: rgba(255, 255, 255, 0.07);
+      --radius-lg: 16px;
+      --radius-md: 12px;
+      --shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    }
+
+    body.light-theme {
+      --bg-main: #f2f4f8;
+      --bg-card: #ffffff;
+      --bg-elevated: #eef1f6;
+      --primary: #1d6ff2;
+      --primary-dim: rgba(29, 111, 242, 0.1);
+      --text-main: #111827;
+      --text-muted: #6b7280;
+      --success: #059669;
+      --success-bg: rgba(5, 150, 105, 0.12);
+      --warning: #d97706;
+      --warning-bg: rgba(217, 119, 6, 0.12);
+      --danger: #dc2626;
+      --danger-bg: rgba(220, 38, 38, 0.1);
+      --border: rgba(0, 0, 0, 0.08);
+      --shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      padding-bottom: 90px;
+      transition: background-color 0.25s ease, color 0.25s ease;
+    }
+
+    /* Верхняя панель */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .header-container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .venue-selector {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+    }
+
+    .brand-logo {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #2b7fff, #1a56db);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 800;
+      font-size: 15px;
+      letter-spacing: -0.5px;
+      box-shadow: 0 4px 10px rgba(43, 127, 255, 0.3);
+    }
+
+    .venue-text h1 {
+      font-size: 15px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .venue-address {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 1px;
+    }
+
+    .top-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .icon-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      cursor: pointer;
+      position: relative;
+      transition: transform 0.15s ease;
+    }
+
+    .icon-btn:active { transform: scale(0.92); }
+
+    .notif-dot {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      width: 8px;
+      height: 8px;
+      background: var(--danger);
+      border-radius: 50%;
+      border: 1.5px solid var(--bg-card);
+    }
+
+    /* Поиск и дата */
+    .search-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .search-box {
+      flex: 1;
+      position: relative;
+    }
+
+    .search-box span {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    .search-input {
+      width: 100%;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 9px 12px 9px 34px;
+      color: var(--text-main);
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .search-input:focus {
+      border-color: var(--primary);
+    }
+
+    .date-select {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0 12px;
+      color: var(--text-main);
+      font-size: 13px;
+      font-weight: 600;
+      outline: none;
+      cursor: pointer;
+    }
+
+    /* Табы статусов */
+    .status-tabs {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .status-tabs::-webkit-scrollbar { display: none; }
+
+    .tab-btn {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .tab-btn.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+    }
+
+    .tab-count {
+      background: rgba(0, 0, 0, 0.2);
+      padding: 1px 6px;
+      border-radius: 10px;
+      font-size: 11px;
+    }
+
+    .tab-btn.active .tab-count {
+      background: rgba(255, 255, 255, 0.25);
+      color: #fff;
+    }
+
+    /* Контейнер контента */
+    .main-container {
+      max-width: 600px;
+      margin: 14px auto;
+      padding: 0 14px;
+    }
+
+    /* Баннер новых броней (вместо уродливой зеленой кнопки) */
+    .incoming-alert {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.18), rgba(16, 185, 129, 0.05));
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      margin-bottom: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      animation: pulseBorder 2s infinite;
+    }
+
+    @keyframes pulseBorder {
+      0%, 100% { border-color: rgba(16, 185, 129, 0.4); }
+      50% { border-color: rgba(16, 185, 129, 0.9); }
+    }
+
+    .incoming-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .pulse-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--success);
+      box-shadow: 0 0 10px var(--success);
+    }
+
+    .incoming-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .incoming-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .incoming-btn {
+      background: var(--success);
+      color: #fff;
+      border: none;
+      padding: 7px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* Карточка брони */
+    .booking-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 14px 16px;
+      margin-bottom: 10px;
+      transition: transform 0.15s ease, border-color 0.2s ease;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .booking-card:active {
+      transform: scale(0.99);
+    }
+
+    .booking-card.status-new {
+      border-left: 4px solid var(--warning);
+    }
+    .booking-card.status-confirmed {
+      border-left: 4px solid var(--success);
+    }
+    .booking-card.status-cancelled {
+      border-left: 4px solid var(--danger);
+      opacity: 0.78;
+    }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+
+    .datetime-group {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .booking-time {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: var(--text-main);
+    }
+
+    .booking-date {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: var(--bg-elevated);
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+
+    .guests-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--primary-dim);
+      color: var(--primary);
+      font-weight: 700;
+      font-size: 12px;
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+
+    .status-badge {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 9px;
+      border-radius: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .badge-new { background: var(--warning-bg); color: var(--warning); }
+    .badge-confirmed { background: var(--success-bg); color: var(--success); }
+    .badge-cancelled { background: var(--danger-bg); color: var(--danger); }
+
+    .card-middle {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .guest-name {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 3px;
+    }
+
+    .guest-phone {
+      font-size: 13px;
+      color: var(--text-muted);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .table-tag {
+      font-size: 12px;
+      color: var(--text-muted);
+      background: var(--bg-elevated);
+      padding: 5px 10px;
+      border-radius: 8px;
+      font-weight: 600;
+    }
+
+    .guest-note {
+      margin-top: 10px;
+      padding: 8px 10px;
+      background: var(--bg-elevated);
+      border-radius: 8px;
+      font-size: 12px;
+      color: var(--text-muted);
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    /* Быстрые кнопки подтверждения для новых броней */
+    .quick-actions {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-accept {
+      flex: 2;
+      background: var(--success);
+      color: #fff;
+      border: none;
+      padding: 9px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .btn-decline {
+      flex: 1;
+      background: var(--danger-bg);
+      color: var(--danger);
+      border: none;
+      padding: 9px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    /* Плавающая кнопка + Бронь */
+    .fab-wrap {
+      position: fixed;
+      bottom: 20px;
+      left: 0;
+      right: 0;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 0 16px;
+      z-index: 90;
+      pointer-events: none;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .fab-btn {
+      pointer-events: auto;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      padding: 13px 20px;
+      border-radius: 30px;
+      font-size: 14px;
+      font-weight: 700;
+      box-shadow: 0 8px 20px rgba(43, 127, 255, 0.4);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Модальные шторки (Bottom Sheet) */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.65);
+      backdrop-filter: blur(4px);
+      z-index: 200;
+      align-items: flex-end;
+      justify-content: center;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+    }
+
+    .bottom-sheet {
+      background: var(--bg-card);
+      width: 100%;
+      max-width: 600px;
+      border-radius: 22px 22px 0 0;
+      padding: 18px 20px 30px;
+      border-top: 1px solid var(--border);
+      animation: slideUp 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+
+    .sheet-pill {
+      width: 40px;
+      height: 4px;
+      background: var(--text-muted);
+      opacity: 0.3;
+      border-radius: 4px;
+      margin: 0 auto 16px;
+    }
+
+    .sheet-title {
+      font-size: 18px;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+
+    .sheet-text {
+      font-size: 13px;
+      line-height: 1.5;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+    }
+
+    .form-input {
+      width: 100%;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 11px 14px;
+      color: var(--text-main);
+      font-size: 14px;
+      margin-bottom: 10px;
+      outline: none;
+    }
+
+    .sheet-btn {
+      width: 100%;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      padding: 13px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 15px;
+      cursor: pointer;
+      margin-top: 6px;
+    }
+
+    .empty-box {
+      text-align: center;
+      padding: 45px 20px;
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-container">
+      <div class="top-bar">
+        <div class="venue-selector" onclick="haptic('light')">
+          <div class="brand-logo">ТМ</div>
+          <div class="venue-text">
+            <h1>Grand Lounge & Bar <span>▾</span></h1>
+            <div class="venue-address">ул. Покровка, д. 31, с. 4</div>
+          </div>
+        </div>
+        <div class="top-actions">
+          <button class="icon-btn" onclick="toggleTheme()" title="Сменить тему">🌓</button>
+          <button class="icon-btn" onclick="openHelpModal()" title="Как пользоваться">❓</button>
+          <button class="icon-btn" onclick="filterByNew()" title="Уведомления">
+            🔔
+            <span class="notif-dot" id="notifDot"></span>
+          </button>
+        </div>
+      </div>
+
+      <div class="search-row">
+        <div class="search-box">
+          <span>🔍</span>
+          <input type="text" id="searchInput" class="search-input" placeholder="Имя гостя, телефон или стол..." oninput="renderBookings()">
+        </div>
+        <select id="dateFilter" class="date-select" onchange="haptic('light'); renderBookings()">
+          <option value="all">Все даты</option>
+          <option value="18.10" selected>18.10 (Вс)</option>
+          <option value="19.10">19.10 (Пн)</option>
+        </select>
+      </div>
+
+      <div class="status-tabs">
+        <button class="tab-btn active" onclick="setStatusFilter('all', this)">
+          Все <span class="tab-count" id="count-all">0</span>
+        </button>
+        <button class="tab-btn" id="tab-new" onclick="setStatusFilter('new', this)">
+          ⚡ Новые <span class="tab-count" id="count-new">0</span>
+        </button>
+        <button class="tab-btn" onclick="setStatusFilter('confirmed', this)">
+          Подтверждены <span class="tab-count" id="count-confirmed">0</span>
+        </button>
+        <button class="tab-btn" onclick="setStatusFilter('cancelled', this)">
+          Отменены <span class="tab-count" id="count-cancelled">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="main-container">
+    <!-- Умный баннер новых броней -->
+    <div class="incoming-alert" id="incomingBanner" onclick="filterByNew()">
+      <div class="incoming-left">
+        <div class="pulse-dot"></div>
+        <div>
+          <div class="incoming-title" id="incomingTitle">Новые заявки на бронь (2)</div>
+          <div class="incoming-sub">Требуют подтверждения хостес</div>
+        </div>
+      </div>
+      <button class="incoming-btn" onclick="event.stopPropagation(); acceptAllNew()">Принять все</button>
+    </div>
+
+    <div id="bookingsList"></div>
+  </div>
+
+  <div class="fab-wrap">
+    <button class="fab-btn" onclick="openAddBookingModal()">
+      <span>＋</span> Новая бронь
+    </button>
+  </div>
+
+  <!-- Модалка: Справка и обратная связь (убрали мусор с главного экрана) -->
+  <div class="modal-overlay" id="helpModal" onclick="if(event.target===this) closeHelpModal()">
+    <div class="bottom-sheet">
+      <div class="sheet-pill"></div>
+      <div class="sheet-title">О сервисе «ТоМесто Брони»</div>
+      <div class="sheet-text">
+        • <b>Новые брони</b> подсвечиваются желтым индикатором — подтвердите или отклоните их в один клик.<br>
+        • Нажмите на номер телефона для быстрого вызова гостя.<br>
+        • Нажмите на карточку брони, чтобы назначить стол или изменить статус.
+      </div>
+      <div class="sheet-title" style="font-size:15px; margin-top:16px;">Есть идеи по улучшению?</div>
+      <input type="text" id="feedbackText" class="form-input" placeholder="Напишите ваше предложение разработчикам...">
+      <button class="sheet-btn" onclick="sendFeedback()">Отправить в ТоМесто</button>
+    </div>
+  </div>
+
+  <!-- Модалка: Добавление ручной брони -->
+  <div class="modal-overlay" id="addBookingModal" onclick="if(event.target===this) closeAddBookingModal()">
+    <div class="bottom-sheet">
+      <div class="sheet-pill"></div>
+      <div class="sheet-title">Добавить бронь в зал</div>
+      <input type="text" id="bName" class="form-input" placeholder="Имя гостя (например, Александр)">
+      <input type="tel" id="bPhone" class="form-input" placeholder="Телефон (+7 999 000-00-00)">
+      <div style="display:flex; gap:8px;">
+        <input type="time" id="bTime" class="form-input" value="19:00">
+        <input type="number" id="bGuests" class="form-input" placeholder="Гостей (2)" value="2" min="1" max="20">
+      </div>
+      <input type="text" id="bNote" class="form-input" placeholder="Комментарий (Стол у окна, некурящий зал...)">
+      <button class="sheet-btn" onclick="createNewBooking()">Создать бронь</button>
+    </div>
+  </div>
+
+  <!-- Модалка: Детали конкретной брони -->
+  <div class="modal-overlay" id="detailsModal" onclick="if(event.target===this) closeDetailsModal()">
+    <div class="bottom-sheet" id="detailsContent"></div>
+  </div>
+
+  <script>
+    const tg = window.Telegram?.WebApp;
+    if (tg) {
+      tg.ready();
+      tg.expand();
+    }
+
+    function haptic(type = 'light') {
+      if (!tg?.HapticFeedback) return;
+      if (['success', 'warning', 'error'].includes(type)) {
+        tg.HapticFeedback.notificationOccurred(type);
+      } else {
+        tg.HapticFeedback.impactOccurred(type);
+      }
+    }
+
+    // Стартовая база с реальным примером со скрина + живыми кейсами
+    let bookings = [
+      {
+        id: 1,
+        date: "18.10",
+        day: "вс",
+        time: "18:30",
+        guests: 4,
+        name: "Алексей Смирнов",
+        phone: "+7 926 418-XX-12",
+        status: "new",
+        table: "Стол не назначен",
+        note: "VIP-зона или мягкий диван, день рождения"
+      },
+      {
+        id: 2,
+        date: "18.10",
+        day: "вс",
+        time: "19:00",
+        guests: 2,
+        name: "Мария Волкова",
+        phone: "+7 916 802-XX-55",
+        status: "new",
+        table: "Стол #7",
+        note: "Просили тихое место для свидания"
+      },
+      {
+        id: 3,
+        date: "18.10",
+        day: "вс",
+        time: "16:00",
+        guests: 3,
+        name: "Дмитрий К.",
+        phone: "+7 903 551-XX-90",
+        status: "confirmed",
+        table: "Стол #14 (Камин)",
+        note: "Постоянный гость"
+      },
+      {
+        id: 4,
+        date: "18.10",
+        day: "вс",
+        time: "14:00",
+        guests: 2,
+        name: "Иван",
+        phone: "+7 981 XXX-XX-73",
+        status: "cancelled",
+        table: "Стол #4",
+        note: "Отмена через бот за 40 минут до визита"
+      },
+      {
+        id: 5,
+        date: "19.10",
+        day: "пн",
+        time: "20:00",
+        guests: 6,
+        name: "Артем и компания",
+        phone: "+7 999 114-XX-08",
+        status: "confirmed",
+        table: "Стол #1 (Большой)",
+        note: "Предоплата 5000 ₽ внесена"
+      }
+    ];
+
+    let activeStatusFilter = 'all';
+
+    function toggleTheme() {
+      haptic('light');
+      document.body.classList.toggle('light-theme');
+    }
+
+    function setStatusFilter(status, btnEl) {
+      haptic('light');
+      activeStatusFilter = status;
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      if (btnEl) btnEl.classList.add('active');
+      renderBookings();
+    }
+
+    function filterByNew() {
+      const newTab = document.getElementById('tab-new');
+      setStatusFilter('new', newTab);
+    }
+
+    function updateCounters() {
+      const dateVal = document.getElementById('dateFilter').value;
+      const byDate = bookings.filter(b => dateVal === 'all' || b.date === dateVal);
+
+      const newCount = byDate.filter(b => b.status === 'new').length;
+      const confCount = byDate.filter(b => b.status === 'confirmed').length;
+      const cancCount = byDate.filter(b => b.status === 'cancelled').length;
+
+      document.getElementById('count-all').textContent = byDate.length;
+      document.getElementById('count-new').textContent = newCount;
+      document.getElementById('count-confirmed').textContent = confCount;
+      document.getElementById('count-cancelled').textContent = cancCount;
+
+      const banner = document.getElementById('incomingBanner');
+      const dot = document.getElementById('notifDot');
+      const totalNewAllDates = bookings.filter(b => b.status === 'new').length;
+
+      if (totalNewAllDates > 0) {
+        banner.style.display = 'flex';
+        dot.style.display = 'block';
+        document.getElementById('incomingTitle').textContent = `Новые заявки на бронь (${totalNewAllDates})`;
+      } else {
+        banner.style.display = 'none';
+        dot.style.display = 'none';
+      }
+    }
+
+    function renderBookings() {
+      updateCounters();
+      const query = document.getElementById('searchInput').value.trim().toLowerCase();
+      const dateVal = document.getElementById('dateFilter').value;
+      const listEl = document.getElementById('bookingsList');
+      listEl.innerHTML = '';
+
+      const filtered = bookings.filter(b => {
+        if (dateVal !== 'all' && b.date !== dateVal) return false;
+        if (activeStatusFilter !== 'all' && b.status !== activeStatusFilter) return false;
+        if (query) {
+          const hay = `${b.name} ${b.phone} ${b.table} ${b.time}`.toLowerCase();
+          return hay.includes(query);
+        }
+        return true;
+      });
+
+      if (filtered.length === 0) {
+        listEl.innerHTML = `<div class="empty-box">Броней по выбранным фильтрам нет</div>`;
+        return;
+      }
+
+      const statusLabels = {
+        new: { text: "Ожидает", cls: "badge-new" },
+        confirmed: { text: "Подтверждена", cls: "badge-confirmed" },
+        cancelled: { text: "Гость отменил", cls: "badge-cancelled" }
+      };
+
+      filtered.forEach(b => {
+        const st = statusLabels[b.status];
+        const card = document.createElement('div');
+        card.className = `booking-card status-${b.status}`;
+        card.onclick = () => openDetailsModal(b.id);
+
+        card.innerHTML = `
+          <div class="card-top">
+            <div class="datetime-group">
+              <span class="booking-time">${b.time}</span>
+              <span class="booking-date">${b.date} (${b.day})</span>
+              <span class="guests-pill">👤 ${b.guests} гостя</span>
+            </div>
+            <span class="status-badge ${st.cls}">${st.text}</span>
+          </div>
+
+          <div class="card-middle">
+            <div>
+              <div class="guest-name">${b.name}</div>
+              <a href="tel:${b.phone}" class="guest-phone" onclick="event.stopPropagation()">
+                📞 ${b.phone}
+              </a>
+            </div>
+            <div class="table-tag">🪑 ${b.table}</div>
+          </div>
+
+          ${b.note ? `<div class="guest-note">💬 <span>${b.note}</span></div>` : ''}
+
+          ${b.status === 'new' ? `
+            <div class="quick-actions" onclick="event.stopPropagation()">
+              <button class="btn-accept" onclick="changeStatus(${b.id}, 'confirmed')">✓ Принять бронь</button>
+              <button class="btn-decline" onclick="changeStatus(${b.id}, 'cancelled')">Отклонить</button>
+            </div>
+          ` : ''}
+        `;
+        listEl.appendChild(card);
+      });
+    }
+
+    function changeStatus(id, newStatus) {
+      haptic(newStatus === 'confirmed' ? 'success' : 'warning');
+      const item = bookings.find(b => b.id === id);
+      if (item) {
+        item.status = newStatus;
+        renderBookings();
+        closeDetailsModal();
+      }
+    }
+
+    function acceptAllNew() {
+      haptic('success');
+      bookings.forEach(b => {
+        if (b.status === 'new') b.status = 'confirmed';
+      });
+      renderBookings();
+    }
+
+    function openDetailsModal(id) {
+      haptic('light');
+      const b = bookings.find(x => x.id === id);
+      if (!b) return;
+      const box = document.getElementById('detailsContent');
+      box.innerHTML = `
+        <div class="sheet-pill"></div>
+        <div class="sheet-title">${b.name} — ${b.time} (${b.date})</div>
+        <div class="sheet-text">
+          <b>Телефон:</b> ${b.phone}<br>
+          <b>Количество гостей:</b> ${b.guests} чел.<br>
+          <b>Текущий стол:</b> ${b.table}<br>
+          <b>Заметка:</b> ${b.note || 'Нет комментариев'}
+        </div>
+        <div style="display:flex; gap:8px; margin-top:12px;">
+          <button class="btn-accept" onclick="changeStatus(${b.id}, 'confirmed')">Подтвердить</button>
+          <button class="btn-decline" onclick="changeStatus(${b.id}, 'cancelled')">Отменить бронь</button>
+        </div>
+      `;
+      document.getElementById('detailsModal').classList.add('open');
+    }
+
+    function closeDetailsModal() {
+      document.getElementById('detailsModal').classList.remove('open');
+    }
+
+    function openHelpModal() {
+      haptic('light');
+      document.getElementById('helpModal').classList.add('open');
+    }
+    function closeHelpModal() {
+      document.getElementById('helpModal').classList.remove('open');
+    }
+
+    function sendFeedback() {
+      haptic('success');
+      document.getElementById('feedbackText').value = '';
+      closeHelpModal();
+    }
+
+    function openAddBookingModal() {
+      haptic('light');
+      document.getElementById('addBookingModal').classList.add('open');
+    }
+    function closeAddBookingModal() {
+      document.getElementById('addBookingModal').classList.remove('open');
+    }
+
+    function createNewBooking() {
+      const name = document.getElementById('bName').value.trim() || 'Гость с линии';
+      const phone = document.getElementById('bPhone').value.trim() || '+7 900 000-00-00';
+      const time = document.getElementById('bTime').value || '19:00';
+      const guests = parseInt(document.getElementById('bGuests').value) || 2;
+      const note = document.getElementById('bNote').value.trim();
+
+      haptic('success');
+      bookings.unshift({
+        id: Date.now(),
+        date: "18.10",
+        day: "вс",
+        time,
+        guests,
+        name,
+        phone,
+        status: "confirmed",
+        table: "Стол #5",
+        note
+      });
+
+      document.getElementById('bName').value = '';
+      document.getElementById('bPhone').value = '';
+      document.getElementById('bNote').value = '';
+      closeAddBookingModal();
+      renderBookings();
+    }
+
+    renderBookings();
+  </script>
+</body>
+</html>
